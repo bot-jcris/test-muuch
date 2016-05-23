@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Múuch' Wa'akun</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.css">
+	
+	
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" >
+	  <!-- Firepad -->
+  <link rel="stylesheet" href="https://cdn.firebase.com/libs/firepad/1.3.0/firepad.css" />
+	  <!--jstree-->
+	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+	 
+	
+	<style>
+		
+	</style>
+	
+  </head>
+  <body ng-app="realTime" class="bgrdBody">
+	  
+	<nav class="navbar navbar-static-top navbar-dark bg-inverse p5" 
+		style="background-color: #EBEBEB;"
+		ng-controller="NavCtrl">
+		
+		<img style="float:left; z-index: 100; margin-left:5vh;" src="../images/Logo.png" width="55">
+		<md-button class="md-primary navbar-brand" ng-href="/#/home">Múuch' Wa'akun</md-button>
+		
+		
+		
+		<md-fab-toolbar md-open="demo.isOpen" count="demo.count" md-direction="left"  disable-animation="false">
+			<md-fab-trigger class="align-with-text" style="float:right;"  disable-animation="false">
+			  <md-button aria-label="menu" class="md-fab md-primary" ><span class="glyphicon glyphicon-th-large"></span>
+			  </md-button>
+			</md-fab-trigger>
+
+				<md-toolbar  disable-animation="false">
+				  <md-fab-actions class="md-toolbar-tools pull-right">
+
+
+			<ul class="nav navbar-nav pull-right">
+
+			  <li ng-show="isLoggedIn()">
+				<md-button class="md-primary whiteText" ng-href="/#/proyectos">Workspaces</md-button>
+			  </li>
+			  <li ng-show="isLoggedIn()">
+				<md-button class="md-primary whiteText" ng-href="/#/usuarios">Usuarios</md-button>
+			  </li>
+			  <li ng-show="isLoggedIn()">
+				<md-button class="md-primary whiteText" ng-href="/#/proyectos-publicos">Proyectos</md-button>
+			  </li>
+
+			  <li ng-show="isLoggedIn()">
+				<md-button class="md-primary whiteText" ng-href="/#/usuario/{{currentId()}}">{{ currentUser() }}</md-button>
+			  </li>
+
+			  <li ng-show="isLoggedIn()">
+				<md-button class="md-primary whiteText" ng-href="" ng-click="logOut()">Cerrar Sesión</md-button>
+			  </li>
+			  <li ng-hide="isLoggedIn()">
+				<md-button class="md-primary whiteText" ng-href="/#/login">Inicio de Sesión</md-button>
+			  </li>
+			  <li ng-hide="isLoggedIn()">
+				<md-button class="md-primary whiteText" ng-href="/#/register">Registro</md-button>
+			  </li>
+			  <li ng-show="isLoggedIn()">
+				<a  ng-href="/#/register/{{currentUser()}}" class="aBoton">
+				<img src="../images/{{ currentAvatar() }}.png" width="55" />
+				</a>
+			  </li>
+			</ul>
+
+					</md-fab-actions>
+			</md-toolbar>
+		  </md-fab-toolbar>
+		
+	</nav>
+  
+	  
+	<div ng-hide="isLoggedIn()">
+	<ui-view></ui-view>
+    </div>
+
+	<!-- Angular Material requires Angular.js Libraries -->
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-aria.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-messages.min.js"></script>
+  
+  <!-- Angular Router -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
+
+  <!-- Angular Material Library -->
+  <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.js"></script>
+  
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.3.2/ui-bootstrap.js"></script> -->
+  
+	  <!--Bootstrap-->
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.2/ui-bootstrap-tpls.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+   <!-- ACE and its JavaScript mode and theme files -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.2/ace.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.2/mode-javascript.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.2/theme-textmate.js"></script>
+	
+  <!-- Firebase -->
+  <script src="https://cdn.firebase.com/js/client/2.3.2/firebase.js"></script>
+			
+  <!--Firepad -->
+  <script src="https://cdn.firebase.com/libs/firepad/1.3.0/firepad.min.js"></script>
+			
+<!-- AngularFire -->
+<script src="https://cdn.firebase.com/libs/angularfire/1.2.0/angularfire.min.js"></script>
+			
+	<!--Angular Tree -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+	<script src="javascripts/jsTree.directive.js"></script>
+	
+	<!--Alertify-->
+	
+	<script src="https://cdn.rawgit.com/alertifyjs/alertify.js/v1.0.10/dist/js/ngAlertify.js"></script>
+
+
+			
+<!--JS-->
+<script src="socket.io/socket.io.js"></script>
+<script src="javascripts/socket.io-stream.js"></script>
+<script src="javascripts/terminal.js"></script>
+
+
+			
+  <!-- Custom Scripts -->
+  <script src="/javascripts/realTimeApp.js"></script>
+
+ 
+ <script type="text/ng-template" id="/detalle-proyecto.html">
+ <div class="row">
+	<div class="col-md-6 col-md-offset-3 bgrdWhite">
+		<div class="">
+			 <md-card>
+				<md-card-title>
+				  <md-card-title-media>
+				   <div class="md-media-sm card-media">
+						<img src="../images/{{ projectF.icono }}.png" width="55" />
+					</div>
+				  </md-card-title-media>
+				  
+				  <md-card-title-text>
+					<span class="md-headline">{{projectF.nombre}}</span>
+					<span class="md-subhead">{{projectF.descripcion}}</span>
+					<span class="md-subhead">{{projectF.fechaCreacion}}</span>
+					<span class="md-subhead">Estado: {{projectF.finalizado ? 'Finalizado' : 'Activo'}}</span>
+				  </md-card-title-text>
+				  
+				</md-card-title>
+			  </md-card>
+		</div>
+		<div>
+			<md-content>
+				<md-list style="height:400px;">
+				  <md-subheader class="md-no-sticky">Usuarios que participan</md-subheader>
+				  <md-list-item class="md-3-line" ng-repeat="user in projectF.colaboradores"
+					>
+					<a ng-href="/#/usuario/{{user._id}}">
+					<img ng-src="../images/{{ user.iconoAvatar }}.png" 
+					class="md-avatar" 
+					alt="{{project.nombre}}">
+					</a>
+					<div class="md-list-item-text" layout="column">
+					  <h3>{{ user.nombreCompleto }}</h3>
+					  <h4>{{ user.nombreInstitucion }}</h4>
+					  <p>{{ user.correoElectronico }}</p>
+					  
+					</div>
+				  </md-list-item>
+				</md-list>
+			</md-content>
+		</div>
+	</div>
+</div>
+</script> 
+  
+  
+ <script type="text/ng-template" id="/usuario.html">
+ <div class="row">
+	<div class="col-md-6 col-md-offset-3 bgrdWhite">
+		<div class="">
+			 <md-card>
+				<md-card-title>
+				  <md-card-title-media>
+				   <div class="md-media-sm card-media">
+						<img src="../images/{{ user.iconoAvatar }}.png" width="55" />
+					</div>
+				  </md-card-title-media>
+				  
+				  <md-card-title-text>
+					<span class="md-headline">{{user.nombreCompleto}}</span>
+					<span class="md-subhead">{{user.correoElectronico}}</span>
+					<span class="md-subhead">{{user.nombreInstitucion}}</span>
+				  </md-card-title-text>
+				  
+				</md-card-title>
+			  </md-card>
+		</div>
+		<div>
+			<md-content>
+				<md-list style="height:400px;">
+				  <md-subheader class="md-no-sticky">Proyectos en que participa</md-subheader>
+				  <md-list-item class="md-3-line" ng-repeat="project in user.proyectos"
+					ng-show="!project.privado">
+					<a ng-href="/#/detalle-proyecto/{{project._id}}">
+					<img ng-src="../images/{{ project.icono }}.png" 
+					class="md-avatar" 
+					alt="{{project.nombre}}">
+					</a>
+					<div class="md-list-item-text" layout="column">
+					  <h3>{{ project.nombre }}</h3>
+					  <h4>{{ project.descripcion }}</h4>
+					  <p>{{ project.fechaCreacion }}</p>
+					  <p>Estado: {{project.finalizado ? 'Finalizado' : 'Activo'}}</span>
+				  </md-card-title-text></p>
+					</div>
+				  </md-list-item>
+				</md-list>
+			</md-content>
+		</div>
+	</div>
+</div>
+</script> 
+  
+<script type="text/ng-template" id="/usuarios.html">
+<div class="row">
+	<div class="col-md-4 col-md-offset-4 bgrdWhite">
+		<md-content class="md-padding autocomplete" layout="column">
+			
+			<!--<md-contact-chips ng-model="contacts" 
+				md-contacts="querySearch($query)" 
+				md-contact-name="username" 
+				md-contact-image="iconoAvatar" 
+				md-contact-email="correoElectronico" 
+				md-require-match="true" 
+				md-highlight-flags="i" 
+				filter-selected="filterSelected" 
+				placeholder="Usuarios">
+			</md-contact-chips>-->
+
+			<md-list class="fixedRows" style="height:300px;">
+			  <md-subheader class="md-no-sticky">Usuarios</md-subheader>
+			  
+			  <md-list-item class="md-2-line contact-item" ng-repeat="contact in allContacts" ">
+                
+                    <a ng-href="/#/usuario/{{contact._id}}">
+                    <img ng-src="{{ contact.iconoAvatar }}" class="md-avatar" alt="{{contact.username}}">
+                    </a>
+                    <div class="md-list-item-text compact">
+                      <h3>{{contact.username}}</h3>
+                      <p>{{contact.correoElectronico}}</p>
+                    </div>
+                
+			  </md-list-item>
+			  
+			</md-list>
+			
+			</md-content>
+	</div>
+</div>
+</script>
+  
+<script type="text/ng-template" id="/proyectos-publicos.html">
+<div class="row">
+	<div class="col-md-6 col-md-offset-3 bgrdWhite">
+		<md-content>
+			<md-list style="height:500px;">
+			  <md-subheader class="md-no-sticky">Proyectos Públicos</md-subheader>
+			  <md-list-item class="md-3-line" ng-repeat="project in projects"
+			  ng-show="!project.privado">
+				<a ng-href="/#/detalle-proyecto/{{project._id}}">
+				<img ng-src="../images/{{ project.icono }}.png" 
+				class="md-avatar" 
+				alt="{{project.nombre}}">
+				</a>
+				<div class="md-list-item-text" layout="column">
+				  <h3>{{ project.nombre }}</h3>
+				  <h4>{{ project.descripcion }}</h4>
+				  <p>{{ project.fechaCreacion }}</p>
+				</div>
+			  </md-list-item>
+			</md-list>
+		</md-content>
+	</div>
+</div>
+</script>
+	
+<script type="text/ng-template" id="/agregar-proyectos.html">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4 col-md-offset-4 bgrdWhite">
+				<div ng-show="error" class="alert alert-danger row" style="margin-bottom:0">
+					<span>{{ error.message }}</span>
+				</div>
+			
+				<div class="page-header bgrdBrown" >
+					<h2>Agregar Proyectos</h2>
+				</div>
+			
+				<form ng-submit="addProject()" class="m30">
+					
+					<md-input-container>
+						<label>Nombre</label>
+						<input ng-model="nombre" style="width:300px;">
+					</md-input-container>
+					
+					<md-input-container>
+						<label>Descripcion</label>
+						<input ng-model="descripcion" style="width:300px;">
+					</md-input-container>
+					
+					<md-input-container style="width:300px;">
+						<label>Ícono</label>
+						<md-select ng-model="icono">
+						  <md-option ng-repeat="icono in iconos" value="{{icono.url}}">
+							<img src="../images/{{icono.url}}.png" width="50" height="50" />
+						  </md-option>
+						</md-select>
+					</md-input-container>
+					
+					<!--<md-input-container style="width:300px;">
+						<label>Privado</label>
+						<md-checkbox ng-model="privado" aria-label="Privado">
+						</md-checkbox>
+					</md-input-container>-->
+					
+					<md-radio-group ng-model="privado">
+						<md-radio-button value="true" class="md-primary">
+							Secreto: Los proyectos secretos no apareceran en el listado de proyectos y solo los colaboradores sabran de su existencia
+						</md-radio-button>
+						<md-radio-button value="false"> 
+							Privado: Los proyectos privados apareceran en listado de proyectos para que todos los usuarios puedan ver su descripcion y los colaboradores que participan en ella
+							
+						</md-radio-button>
+					</md-radio-group>
+					
+					<md-button type="submit" class="md-raised md-primary">Guardar</md-button>
+				</form>
+			</div>
+            
+		</div>
+            
+		</div>
+		
+	
+	</div>
+</script>
+   
+<script type="text/ng-template" id="/editar-proyectos.html">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4 col-md-offset-4 bgrdWhite">
+				<div ng-show="error" class="alert alert-danger row" style="margin-bottom:0">
+					<span>{{ error.message }}</span>
+				</div>
+			
+				<div class="page-header bgrdBrown" >
+					<h2>Editar Proyecto</h2>
+				</div>
+			
+				<form ng-submit="addProject()" class="m30">
+					
+					<md-input-container>
+						<label>Nombre</label>
+						<input ng-model="nombre" style="width:300px;">
+					</md-input-container>
+					
+					<md-input-container>
+						<label>Descripcion</label>
+						<input ng-model="descripcion" style="width:300px;">
+					</md-input-container>
+					
+					<md-input-container style="width:300px;">
+						<label>Ícono</label>
+						<md-select ng-model="icono">
+						  <md-option ng-repeat="icono in iconos" value="{{icono.url}}">
+							<img src="../images/{{icono.url}}.png" width="50" height="50" />
+						  </md-option>
+						</md-select>
+					</md-input-container>
+					
+					<!--<md-input-container style="width:300px;">
+						<label>Privado</label>
+						<md-checkbox ng-model="privado" aria-label="Privado">
+						</md-checkbox>
+					</md-input-container>-->
+					
+					<md-radio-group ng-model="privado">
+						<md-radio-button value="true" class="md-primary">
+							Secreto: Los proyectos secretos no apareceran en el listado de proyectos y solo los colaboradores sabran de su existencia
+						</md-radio-button>
+						<md-radio-button value="false"> 
+							Privado: Los proyectos privados apareceran en listado de proyectos para que todos los usuarios puedan ver su descripcion y los colaboradores que participan en ella
+							
+						</md-radio-button>
+					</md-radio-group>
+					
+					<md-button type="submit" class="md-raised md-primary">Guardar</md-button>
+				</form>
+			</div>
+            
+            
+            
+		</div>
+            
+		</div>
+		
+	
+	</div>
+</script>
+    
+<script type="text/ng-template" id="/proyectos.html">
+	<div class="container">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h4>Proyectos</h4>
+			</div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-md-4">
+						<md-button class="md-primary" ng-href="/#/agregar-proyectos">Crear Nuevo Proyecto</md-button>
+					</div>
+					
+					<div class="col-md-6" style="height:500px; overflow-y:auto;">
+						<div ng-show="error" class="alert alert-danger row">
+							<span>{{ error.message }}</span>
+						</div>
+						
+						<div  ng-repeat="project in projects">
+							<md-card ng-show="project._id">
+								<md-card-title>
+								  <md-card-title-media>
+								   <div class="md-media-sm card-media">
+										<img src="../images/{{ project.icono }}.png" width="55" />
+									</div>
+								  </md-card-title-media>
+								  
+								  <md-card-title-text>
+									<span class="md-headline">{{project.nombre}}</span>
+									<span class="md-subhead">{{project.descripcion}}</span>
+									<span class="md-subhead">{{project.fechaCreacion | date:'yyyy-MM-dd HH:mm:ss'}}</span>
+								  </md-card-title-text>
+								  
+								</md-card-title>
+								<md-card-actions layout="row" layout-align="end center">
+									<md-button class="md-primary" ng-href="#/proyecto/{{project._id}}"
+									ng-show="project._id">Abrir</md-button>
+									
+									<md-button class="md-primary" ng-if="user._id == project.idUsuario " ng-href="#/editar-proyectos/{{project._id}}" ng-show="project._id">
+                                        Editar
+                                    </md-button>
+									
+									<md-button class="md-warn" 
+									ng-click="deleteProject(project._id)"
+									ng-show="project._id && project.idUsuario == user._id">
+									Eliminar</md-button>
+									
+                                    <md-button class="md-warn" 
+									ng-click="unasignProjectToUser(project._id,project.colaboradores)"
+									ng-show="project._id && project.idUsuario != user._id">
+									Salir</md-button>
+								  
+								</md-card-actions>
+							  </md-card>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+	</div>	
+	
+	
+	</div>
+</script>
+
+<script type="text/ng-template" id="/proyecto.html">
+	<div class="container col-md-12">
+		<div class="panel panel-default ">
+			
+			<div class="panel-heading">
+				
+				<div class="container-fluid">
+					<div class="row ">
+							<div class="col-md-12" >
+								  <h2 style="display: inline">{{project.nombre}} <small>{{project.descripcion}}</small></h2>
+								  <button class="btn btn-success" style="margin-left:10vh" ng-click="addToTerminal()"><span class="glyphicon glyphicon-play" aria-hidden="true"></span>  Run</button>
+								  <button class="btn btn-default" ng-click="addTextToProgram()"><span class="glyphicon glyphicon-indent-left" aria-hidden="true"></span>  Test</button>
+								  <button class="btn btn-warning" ng-click="addTestProgram()"><span class="glyphicon glyphicon-book" aria-hidden="true"></span>    Ejemplo</button>
+								  <button class="btn btn-danger" ng-click="clear()"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>    Limpiar</button>
+							</div>
+
+					</div>
+				</div>
+				
+				
+				
+			</div>
+			<div class="panel-body">
+				<div class="row">
+				
+					<div class="col-md-2">
+						<div class="panel panel-default">
+						
+							<div class="panel-heading">
+                            
+								<!--Directorio-->
+                                
+								<button class="btn btn-default" data-toggle="modal" data-target="#addDocument">
+                                    <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+                                </button>
+                                
+                                <button class="btn btn-default" data-toggle="modal" data-target="#addDirectory">
+                                    <span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>
+                                </button>
+								
+								<button type="button" class="btn btn-default" data-toggle="modal" data-target="#edit">
+                                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                </button>
+								
+								<button class="btn btn-danger" ng-click="delete()">
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                </button>	
+															
+							</div>
+							
+							
+							<!-- Modal addDocument-->
+							<div class="modal fade" id="addDocument" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+							  <div class="modal-dialog" role="document">
+								<div class="modal-content">
+								  <div class="modal-header">
+									<h4 class="modal-title">Nuevo Documento.</h4>
+								  </div>
+								  <div class="modal-body">
+								  	<input type="text" class="form-control" ng-model="nameFile" placeholder="Nombre del documento">
+								  </div>
+								  <div class="modal-footer">
+									<button type="button" class="btn btn-primary" ng-click="addDocument()" data-dismiss="modal">Crear</button>
+								  </div>
+								</div>
+							  </div>
+							</div>
+							<!-- Modal addDocument-->
+                            
+                            <!-- Modal addDirectory-->
+							<div class="modal fade" id="addDirectory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+							  <div class="modal-dialog" role="document">
+								<div class="modal-content">
+								  <div class="modal-header">
+									<h4 class="modal-title">Nuevo Directorio.</h4>
+								  </div>
+								  <div class="modal-body">
+								  	<input type="text" class="form-control" ng-model="nameFile" placeholder="Nombre del directorio">
+								  </div>
+								  <div class="modal-footer">
+									<button type="button" class="btn btn-primary" ng-click="addDirectory()" data-dismiss="modal">Crear</button>
+								  </div>
+								</div>
+							  </div>
+							</div>
+							<!-- Modal ddDirectory-->
+                            
+                            <!-- Modal modify-->
+							<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+							  <div class="modal-dialog" role="document">
+								<div class="modal-content">
+								  <div class="modal-header">
+									<h4 class="modal-title" id="myModalLabel">Editar nombre</h4>
+								  </div>
+								  <div class="modal-body">
+								  	<input type="text" class="form-control" ng-model="newName" placeholder="Nuevo nombre">
+								  </div>
+								  <div class="modal-footer">
+									<button type="button" class="btn btn-primary" ng-click="changeName()" data-dismiss="modal">Guardar</button>
+								  </div>
+								</div>
+							  </div>
+							</div>
+							<!-- Modal -->
+							
+							<div class="panel-body minH">
+                            
+                                <div style="overflow: hidden; width:100%">
+								    <js-tree tree-data="scope"  tree-model="treeModel" tree-events="ready:readyCB;changed:changedCB;open_node:openNodeCB"></js-tree>
+                                </div>
+							</div>
+							
+							<div class="panel-footer">
+								<button type="button" class="btn btn-default" ng-click="saveFile()">
+                                    	<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"> Archivo</span>
+                                	</button>														
+							</div>
+						</div>
+					</div>
+					
+					<div class="col-md-7">
+						
+							<div class="panel panel-default">
+								
+								<div class="panel-body">
+									<div id="firepad-container"></div>
+								</div>
+							</div>
+						
+							<div class="panel panel-default">
+								
+								<div class="panel-body">
+									<pre style="width:100%" class="terminaljs" data-columns="93" data-rows="7" data-name="t1"></pre>
+									
+								</div>
+							</div>
+						
+					</div>
+					
+					<div class="col-md-3">
+						
+                        
+                    <div ng-cloak>
+                      <md-content>
+                        <md-tabs md-dynamic-height md-border-bottom>
+                          <md-tab label="Chat">
+                            <md-content class="md-padding">
+                              <div class="panel-body">
+                                <div ng-model="change" id="foo" style="overflow: scroll;overflow-x: hidden; width:100%" class="minH5">
+                                    <div ng-repeat="message in messages" >
+                                        <ul id="list" ng-model="change" ng-change="change()" class="chat">
+                                        <li ng-if="message.user==user.username" >
+                                            <div class="chat-body mess-user">
+                                                <p>
+                                                    {{message.text}}.
+                                                </p>
+                                            </div>
+                                        </li>
+                                        <li ng-if="message.user!=user.username" >
+                                            <div class="chat-body mess-colab">
+                                                <div class="header">
+                                                    <strong >{{message.user}}</strong>
+                                                </div>
+                                                <p>
+                                                    {{message.text}}
+                                                </p>
+                                            </div>
+                                        </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <form style="margin-top:10px" id="chatForm" ng-submit="send(newmessage)" class="">
+                                    <div class="col-lg-15">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" ng-model="newmessage.text">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-success" type="submit">></button>
+                                            </span>
+                                        </div><!-- /input-group -->
+                                    </div><!-- /.col-lg-6 -->
+                                </form>
+                            </div>
+                            </md-content>
+                          </md-tab>
+                          <md-tab label="Colaboradores">
+                            <md-content class="">
+                                <div class=" minH">
+                                    <form ng-submit="saveCollaborators()" class="">
+                                        <md-content class="md-padding autocomplete" layout="column">
+                                            <md-contact-chips ng-model="contacts" md-contacts="querySearch($query)" md-contact-name="username" md-contact-image="{{iconoAvatar}}" md-contact-email="correoElectronico" md-require-match="true" md-highlight-flags="i" filter-selected="filterSelected" placeholder="Colaboradores">
+                                            </md-contact-chips>
+
+                                            <md-list class="fixedRows" style="height:300px;" ng-if="project.idUsuario == user._id">
+                                              <md-subheader class="md-no-sticky">Usuarios</md-subheader>
+
+                                              <md-list-item class="md-2-line contact-item selected" ng-repeat="(index, contact) in contacts">
+                                                <a ng-href="/#/usuario/{{contact._id}}" target="_blank">
+                                                <img ng-src="images/{{ contact.iconoAvatar }}.png" class="md-avatar" alt="{{contact.username}}">
+                                                </a>
+                                                <div class="md-list-item-text compact">
+                                                  <h3>{{contact.username}}</h3>
+                                                  <p>{{contact.correoElectronico}}</p>
+                                                </div>
+                                              </md-list-item>
+
+                                              <md-list-item class="md-2-line contact-item" ng-repeat="(index, contact) in allContacts" ng-if="contacts.indexOf(contact) < 0">
+                                                <a ng-href="/#/usuario/{{contact._id}}" target="_blank">
+                                                <img ng-src="{{ contact.iconoAvatar }}" class="md-avatar" alt="{{contact.username}}">
+                                                </a>
+                                                <div class="md-list-item-text compact">
+                                                  <h3>{{contact.username}}</h3>
+                                                  <p>{{contact.correoElectronico}}</p>
+                                                </div>
+                                              </md-list-item>
+
+                                            </md-list>
+                                        </md-content>
+
+                                        <md-button ng-if="project.idUsuario == user._id" type="submit" class="md-raised md-primary">
+                                            Actualizar Colaboradores
+                                        </md-button>
+
+                                    </form>
+                                </div>
+                            </md-content>
+                          </md-tab>
+                        </md-tabs>
+                      </md-content>
+                    </div>    
+				</div>
+			</div>
+		</div>
+	</div>
+</script>
+
+
+	
+<script type="text/ng-template" id="/home.html">
+		<div class="homepage-hero-module">
+		<div class="video-container">
+			<div class="filter">
+				
+			</div>
+			<div class = "title-container">
+				<h1>Múuch' Wa'akun</h1>
+				<p>«Grupo de constructores»</p>
+			</div>
+			<video autoplay loop class="fillWidth">
+				<source src="../images/Working-it.mp4" type="video/mp4" />Your browser does not support the video tag. I suggest you upgrade your browser.
+				
+			</video>
+			
+		</div>
+	</div>
+</script>
+	
+<script type="text/ng-template" id="/register.html">
+  <div class="row">
+	<div class="col-md-4 col-md-offset-4 bgrdWhite">
+	  <div ng-show="error" class="alert alert-danger row">
+		<span>{{ error.message }}</span>
+	  </div>
+
+	  <div class="page-header bgrdBrown" >
+		<h2>Registro</h2>
+	  </div>
+	  
+	  <form ng-submit="register()"
+		class="m30" style="margin-top:0 !important; margin-bottom: 10px !important;">
+		
+		<md-input-container ng-show="!isLoggedIn()">
+			<label>Nombre de Usuario</label>
+			<input ng-model="user.username" style="width:300px;"
+				ng-change="user.username=user.username.toLowerCase();">
+		</md-input-container>
+		<md-input-container>
+			<label>Nombre Completo</label>
+			<input ng-model="user.nombreCompleto" style="width:300px;"
+				ng-change="user.nombreCompleto=user.nombreCompleto.toUpperCase();">
+		</md-input-container>
+		
+		<md-input-container>
+			<label>Avatar</label>
+			<md-select ng-model="user.iconoAvatar">
+			  <md-option ng-repeat="avatar in avatars" value="{{avatar.url}}">
+				<img src="../images/{{avatar.url}}.png" width="50" height="50" />
+			  </md-option>
+			</md-select>
+		</md-input-container>
+		
+		<md-input-container style="width: 500px;">
+			<label>Colaborador Independiente</label>
+			<br>
+			<md-checkbox ng-model="user.colaboradorIndependiente" 
+				aria-label="Colaborador Independiente">
+			</md-checkbox>
+		</md-input-container>
+		
+		<md-input-container ng-show="!user.colaboradorIndependiente">
+			<label>Nombre Institucion</label>
+			<input ng-model="user.nombreInstitucion" style="width:300px;"
+				ng-change="user.nombreInstitucion=user.nombreInstitucion.toUpperCase();">
+		</md-input-container>
+		<md-input-container>
+			<label>Correo Electrónico</label>
+			<input type="email" ng-model="user.correoElectronico" style="width:300px;">
+		</md-input-container>
+		<md-input-container>
+			<label>Contraseña</label>
+			<input type="password" ng-model="user.password" style="width:300px;"
+				ng-minlength="6" ng-maxlength="12" ng-pattern="/^[a-zA-Z0-9]*$/">
+		</md-input-container>
+		<md-input-container>
+			<label>Confirmar Contraseña</label>
+			<input type="password" ng-model="user.confirmPassword" style="width:300px;"
+				ng-minlength="6" ng-maxlength="12" ng-pattern="/^[a-zA-Z0-9]*$/">
+		</md-input-container>
+		
+		<md-button type="submit" class="md-raised md-primary">Guardar</md-button>
+	  </form>
+    </div>
+  </div>
+</script>
+
+<script type="text/ng-template" id="/login.html">
+  <div class="row">
+	<div class="col-md-4 col-md-offset-4 bgrdWhite">
+  
+	  <div ng-show="error" class="alert alert-danger row">
+		<span>{{ error.message }}</span>
+	  </div>
+
+	  <div class="page-header bgrdBrown" >
+		<h2>Inicio de sesión</h2>
+	  </div>
+	  
+	  <form ng-submit="logIn()"
+		class="form-signin m30">
+		
+		<md-input-container>
+			<label>Nombre de Usuario</label>
+			<input ng-model="user.username" style="width:300px;">
+		</md-input-container>
+		
+		<md-input-container>
+			<label>Contraseña</label>
+			<input type="password" ng-model="user.password" style="width:300px;">
+		</md-input-container>
+		
+		<md-button type="submit" class="md-raised md-primary">Iniciar Sesión</md-button>
+	  </form>
+  
+    </div>
+  </div>
+</script>
+	
+  </body>
+</html>

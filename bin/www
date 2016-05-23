@@ -1,0 +1,207 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('real-time:server');
+var http = require('http');
+var	fs = require('fs'),
+    socketio = require('socket.io'),
+    child_pty = require('child_pty'),
+    ss = require('socket.io-stream');
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+var server = http.createServer(app);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+
+var ptys = {};
+socketio(server).of('pty').on('connection', function(socket) {
+	// receives a bidirectional pipe from the client see index.html
+	// for the client-side
+	ss(socket).on('new', function(stream, options) {
+		var name = options.name;
+		var pty = child_pty.spawn('/bin/sh', ['-c', "echo \"Muuch Waakun Interpreter 0.0.1\"; /bin/sh"], options);
+		pty.stdout.pipe(stream).pipe(pty.stdin);
+		ptys[name] = pty;
+		socket.on('disconnect', function() {
+			console.log("end");
+			pty.kill('SIGHUP');
+			delete ptys[name];
+		});
+	});
+	
+	ss(socket).on('compile', function(stream, options) {
+		
+		
+		var pty = child_pty.spawn('/bin/sh', ['-c', "echo \"$\"; /bin/sh"], options);
+		
+		//console.log(options.content);
+		
+		if(options.interpreter == "Python"){
+			fs.writeFile("/tmp/test.py", options.content, function(err) {
+				if(err) {
+					return console.log(err);
+				}
+
+				console.log("The file test.py was saved!");
+				
+			});
+			pty.stdin.write('python /tmp/test.py \n');
+		}
+
+		if(options.interpreter == "Javascript"){
+			fs.writeFile("/tmp/test.js", options.content, function(err) {
+				if(err) {
+					return console.log(err);
+				}
+
+				console.log("The file test.js was saved!");
+				
+			});
+			pty.stdin.write('node /tmp/test.js \n');
+			
+		}
+		
+		if(options.interpreter == "C"){
+			fs.writeFile("/tmp/test.c", options.content, function(err) {
+				if(err) {
+					return console.log(err);
+				}
+
+				console.log("The file test.c was saved!");
+				
+			});
+			pty.stdin.write('gcc /tmp/test.c \n');
+			pty.stdin.write('./a.out \n');
+			
+		}
+		
+		if(options.interpreter == "C++"){
+			fs.writeFile("/tmp/test.cpp", options.content, function(err) {
+				if(err) {
+					return console.log(err);
+				}
+
+				console.log("The file test.cpp was saved!");
+				
+			});
+			pty.stdin.write('g++ /tmp/test.cpp \n');
+			pty.stdin.write('./a.out \n');
+			
+		}
+		
+		if(options.interpreter == "Java"){
+			fs.writeFile("test.java", options.content, function(err) {
+				if(err) {
+					return console.log(err);
+				}
+
+				console.log("The file test.js was saved!");
+				
+			});
+			pty.stdin.write('javac test.java -Xlint\n');
+			pty.stdin.write('java test \n');
+			
+		}
+		
+		//console.log(options.command);
+		//pty.stdin.write(options.command+' \n');
+		
+		pty.stdout.pipe(stream).pipe(pty.stdin);
+		ptys[options.name] = pty;
+		socket.on('disconnect', function() {
+			console.log("end");
+			pty.kill('SIGHUP');
+			delete ptys[options.name];
+		});
+	});
+});
+
+process.on('exit', function() {
+	var k = Object.keys(ptys);
+	var i;
+
+	for(i = 0; i < k.length; i++) {
+		ptys[k].kill('SIGHUP');
+	}
+});
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
