@@ -13,6 +13,8 @@ require('./models/Users');
 require('./models/Projects');
 require('./config/passport');
 
+export MONGOLAB_URI= "mongodb://heroku_bnzmb7q6:jcristian_40@ds011893.mlab.com:11893/heroku_bnzmb7q6"
+
 var uri = process.env.MONGOLAB_URI || '127.0.0.1/test';
 console.log('Connecting to DB : ', uri);
 
