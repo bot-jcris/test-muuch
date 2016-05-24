@@ -12,7 +12,18 @@ var passport = require('passport');
 require('./models/Users');
 require('./models/Projects');
 require('./config/passport');
-mongoose.connect('mongodb://localhost/test');
+
+var uri = process.env.MONGOLAB_URI || '127.0.0.1/test';
+console.log('Connecting to DB : ', uri);
+
+mongoose.connect(uri, {}, function(err, db){
+  if(err){
+    console.log('Connection Error ::: ', err);
+  } else {
+    console.log('Successfully Connected!');
+  }
+});
+
 
 
 var routes = require('./routes/index');
