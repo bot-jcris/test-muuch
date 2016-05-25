@@ -13,7 +13,7 @@ require('./models/Users');
 require('./models/Projects');
 require('./config/passport');
 
-mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/test');
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://127.0.0.1:27017/test');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
