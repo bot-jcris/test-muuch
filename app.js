@@ -13,9 +13,8 @@ require('./models/Users');
 require('./models/Projects');
 require('./config/passport');
 
-//mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://127.0.0.1:27017/test');
+//mongoose.connect('mongodb://localhost/test');
 
-//var uri = process.env.MONGOLAB_URI || '127.0.0.1/testdb';
  var uri = process.env.MONGOLAB_URI || 'mongodb://heroku_jghrdmj0:h8mcchgq8h5kn7le463librfea@ds041144.mlab.com:41144/heroku_jghrdmj0';
 console.log('Connecting to DB : ', uri);
 

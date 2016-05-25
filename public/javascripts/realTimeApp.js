@@ -1481,7 +1481,7 @@ function(post, $scope, $stateParams, projects, $state, auth,Message,$firebaseArr
 	
 	//Create a terminal instance
 	var containers = document.getElementsByClassName('terminaljs'),
-	socket = io('http://192.168.0.8:3000/pty'), term, stream;
+	socket = io('https://192.168.0.8:3000/pty'), term, stream;
 	for(var i = 0; i < containers.length; i++) {
 
 		setTimeout(function(i) {
