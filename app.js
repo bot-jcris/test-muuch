@@ -13,7 +13,19 @@ require('./models/Users');
 require('./models/Projects');
 require('./config/passport');
 
-mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://127.0.0.1:27017/test');
+//mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://127.0.0.1:27017/test');
+
+var uri = process.env.MONGOLAB_URI || '127.0.0.1/testdb';
+console.log('Connecting to DB : ', uri);
+
+mongoose.connect(uri, {}, function(err, db){
+  if(err){
+    console.log('Connection Error ::: ', err);
+  } else {
+    console.log('Successfully Connected!');
+  }
+});
+
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
